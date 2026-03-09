@@ -4,7 +4,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class CrearScript {
+    // RECIBIMOS LOS DISTINTOS OBJETOS DESDE LA CLASE "sendData"
     public static void scriptCompleto(String nombreBD, String[] nombreTablas, String[] campos){
+        // CREAMOS LOS "create table" CON LOS DISTINTOS NOMBRES ASIGNADOS Y LOS DATOS ELEGIDOS
         StringBuilder createTablas = new StringBuilder();
         for (String nombreTabla : nombreTablas) {
             // USAMOS .append PARA UNIR EL TEXTO JUNTO CON LAS VARIABLES
@@ -34,12 +36,11 @@ public class CrearScript {
 
         System.out.println("Directorio de ejecución: " + System.getProperty("user.dir"));
 
-        // CREAMOS EL SCRIPT .sql CON EL NOMBRE DE LA BBDD
+        // CREAMOS LA CARPETA Y EL SCRIPT .sql CON EL NOMBRE DE LA BBDD
         File carpeta = new File("src/main/java/Scripts");
         carpeta.mkdirs();
         File archivo = new File(carpeta, nombreBD + ".sql");
-
-        try(FileWriter file = new FileWriter(archivo)){
+        try (FileWriter file = new FileWriter(archivo)){
             file.write(texto);
         } catch (IOException e) {
             System.out.println("ERROR AL CREAR/ESCRIBIR EL ARCHIVO");

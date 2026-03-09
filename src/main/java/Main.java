@@ -1,7 +1,6 @@
 package main.java;
 import main.java.crearScript.CrearScript;
 import java.util.Scanner;
-import java.io.*;
 
 public class Main {
     public static void getData(){
@@ -33,10 +32,26 @@ public class Main {
                 campos[i] = s.next().toLowerCase();
             }
         }
+
+        // EN CASO DE QUE HAYAN FOREIGN KEYS
+        System.out.print("Hay Foreign Keys?: ");
+        String confirmacion = s.next();
+
+        if(confirmacion.equalsIgnoreCase("si")){
+            System.out.println("Nombre de la tabla que contiene la Foreign key: ");
+            String foreignReference = s.next();
+            System.out.print("Nombre de la tabla a la que hacer referencia: ");
+            String tableReference = s.next();
+
+
+        }
+
+
         // MANDAR DATOS
         sendData(nombreBD, nombreTablas, campos);
     }
 
+    // MADAMOS LOS DATOS A LA CLASE "CrearScript"
     public static void sendData(String nombreDB, String[] nombreTablas, String[] campos){
         CrearScript.scriptCompleto(nombreDB, nombreTablas, campos);
     }
