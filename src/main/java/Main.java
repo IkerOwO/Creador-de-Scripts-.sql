@@ -8,7 +8,7 @@ public class Main {
         Scanner s = new Scanner(System.in);
         // NOMBRE BBDD
         System.out.print("Nombre de la Base de datos: ");
-        String nombreBD = s.nextLine();
+        String nombreBD = s.next();
 
         // TABLAS
         System.out.print("Numero de tablas a crear: ");
@@ -18,18 +18,19 @@ public class Main {
         String[] campos = new String[numTablas];
         for(int i = 0; i < numTablas; i++){
             // NOMBRES DE LAS TABLAS
-            System.out.println("Nombre de la tabla numero " + (i+1) + ": ");
-            nombreTablas[i] = s.nextLine();
+            System.out.print("Nombre de la tabla numero " + (i+1) + ": ");
+            nombreTablas[i] = s.next();
 
             // CAMPOS
-            System.out.println("Campos que va a tener la tabla (Nombre, tipo y cantidad separados con espacios) " + nombreTablas[i]);
+            System.out.println("Campos (Nombre, tipo y cantidad separados con espacios) que va a tener la tabla " + nombreTablas[i]+": ");
+            s.nextLine();
             campos[i] = s.nextLine().toLowerCase();
             System.out.println("La tabla " + nombreTablas[i] + " va a contener estos campos:\n" + campos[i] + "\n¿Es correcto?: ");
-            String confirmacion = s.nextLine();
+            String confirmacion = s.next();
 
             if(!confirmacion.equalsIgnoreCase("si")){
                 System.out.println("Campos que va a tener la tabla " + nombreTablas[i]);
-                campos[i] = s.nextLine().toLowerCase();
+                campos[i] = s.next().toLowerCase();
             }
         }
         // MANDAR DATOS
