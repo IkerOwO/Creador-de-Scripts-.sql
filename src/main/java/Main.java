@@ -1,6 +1,5 @@
 package main.java;
 import main.java.crearScript.CrearScript;
-
 import java.util.*;
 
 public class Main {
@@ -34,40 +33,42 @@ public class Main {
         }
 
         // EN CASO DE QUE HAYAN FOREIGN KEYS
-        // TODO PONERLO EN UN BUCLE PARA QUE HAGA FOREIGN KEYS HASTA QUE EN LA COMPROBACION EL USUARIO PONGA UN "no"
         System.out.print("Hay Foreign Keys?: ");
         String confirmacionF = s.next();
-        String queryForeign = null;
 
-        if (confirmacionF.equalsIgnoreCase("si")) {
+        List<String> foreignKeys = new ArrayList<>();
+
+        while(confirmacionF.equalsIgnoreCase("si")){
             System.out.print("Nombre de la tabla que contiene la Foreign key: ");
             String foreignReference = s.next();
             System.out.print("Nombre del campo que se va a usar: ");
             String campoForeign = s.next();
-            System.out.print("Nombre del campo de al que tiene que hacer referencia: ");
+            System.out.print("Nombre del campo al que tiene que hacer referencia: ");
             String campoRef = s.next();
             System.out.print("Nombre de la tabla a la que hace referencia: ");
             String tableReference = s.next();
 
-            // COMPROBAMOS SI LAS TABLAS CONTIENE EL CAMPO INDICADO
-            boolean tablaExiste = tablas.containsKey(tableReference);
-            boolean campoExiste = tablas.containsKey(foreignReference);
-            if (tablaExiste && campoExiste) {
-                queryForeign = String.format(
-                        "FOREIGN KEY (%s) REFERENCES %s(%s);",
+            boolean tablaDestinoExiste = tablas.containsKey(tableReference);
+            boolean tablaOrigenExiste = tablas.containsKey(foreignReference);
+            if(tablaDestinoExiste && tablaOrigenExiste){
+                String queryForeign = String.format(
+                        "FOREIGN KEY (%s) REFERENCES %s(%s)",
                         campoForeign, tableReference, campoRef
                 );
+                foreignKeys.add(queryForeign);
+            } else {
+                System.out.println("Error: alguna de las tablas no existe.");
             }
+
+            System.out.print("Hay alguna foreign key más?: ");
+            confirmacionF = s.next();
         }
 
-
-
-        // MANDAR DATOS
-        sendData(nombreBD, tablas, queryForeign);
+        sendData(nombreBD, tablas, foreignKeys);
     }
 
     // MADAMOS LOS DATOS A LA CLASE "CrearScript"
-    public static void sendData(String nombreDB,Map<String, List<String>> tablas ,String queryForeign){
+    public static void sendData(String nombreDB,Map<String, List<String>> tablas ,List<String> queryForeign){
         CrearScript.scriptCompleto(nombreDB, tablas, queryForeign);
     }
 

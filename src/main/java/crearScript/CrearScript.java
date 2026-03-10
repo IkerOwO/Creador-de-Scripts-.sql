@@ -9,7 +9,7 @@ public class CrearScript {
     // RECIBIMOS LOS DISTINTOS OBJETOS DESDE LA CLASE "sendData"
     public static void scriptCompleto(String nombreBD,
                                       Map<String, List<String>> tablas,
-                                      String queryForeign){
+                                      List<String> queryForeign){
         // CREAMOS LOS "create table" CON LOS DISTINTOS NOMBRES ASIGNADOS Y LOS DATOS ELEGIDOS
         StringBuilder createTablas = new StringBuilder();
         for(String tabla : tablas.keySet()){
