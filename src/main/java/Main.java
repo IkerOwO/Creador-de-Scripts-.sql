@@ -1,9 +1,10 @@
 package main.java;
 import main.java.crearScript.CrearScript;
-import java.util.Scanner;
+
+import java.util.*;
 
 public class Main {
-    public static void getData(){
+    public static void getData() {
         Scanner s = new Scanner(System.in);
         // NOMBRE BBDD
         System.out.print("Nombre de la Base de datos: ");
@@ -12,48 +13,62 @@ public class Main {
         // TABLAS
         System.out.print("Numero de tablas a crear: ");
         int numTablas = s.nextInt();
-        // CREAMOS LOS ARRAYS PARA LOS NOMBRES Y LOS CAMPOS
-        String[] nombreTablas = new String[numTablas];
-        String[] campos = new String[numTablas];
-        for(int i = 0; i < numTablas; i++){
+        // CREAMOS EL MAP QUE CONTENDRA LOS NOMBRE DE LAS TABLAS JUNTO CON LOS CAMPOS DE CADA UNA
+        Map<String, List<String>> tablas = new HashMap<>();
+        for (int i = 0; i < numTablas; i++) {
             // NOMBRES DE LAS TABLAS
-            System.out.print("Nombre de la tabla numero " + (i+1) + ": ");
-            nombreTablas[i] = s.next();
+            System.out.print("Nombre de la tabla numero " + (i + 1) + ": ");
+            String nombreTabla = s.next();
 
             // CAMPOS
-            System.out.println("Campos (Nombre, tipo y cantidad separados con espacios) que va a tener la tabla " + nombreTablas[i]+": ");
+            List<String> listaCampos = new ArrayList<>();
+            System.out.println("Cuantos campos tiene la tabla: ");
+            int numCampos = s.nextInt();
+            // LIMPIAR EL SCANNER
             s.nextLine();
-            campos[i] = s.nextLine().toLowerCase();
-            System.out.println("La tabla " + nombreTablas[i] + " va a contener estos campos:\n" + campos[i] + "\n¿Es correcto?: ");
-            String confirmacion = s.next();
-
-            if(!confirmacion.equalsIgnoreCase("si")){
-                System.out.println("Campos que va a tener la tabla " + nombreTablas[i]);
-                campos[i] = s.next().toLowerCase();
+            for(int j = 0; j < numCampos; j++){
+                System.out.print("Campo "+ (j+1) + ": ");
+                listaCampos.add(s.nextLine());
             }
+            tablas.put(nombreTabla, listaCampos);
         }
 
         // EN CASO DE QUE HAYAN FOREIGN KEYS
+        // TODO PONERLO EN UN BUCLE PARA QUE HAGA FOREIGN KEYS HASTA QUE EN LA COMPROBACION EL USUARIO PONGA UN "no"
         System.out.print("Hay Foreign Keys?: ");
-        String confirmacion = s.next();
+        String confirmacionF = s.next();
+        String queryForeign = null;
 
-        if(confirmacion.equalsIgnoreCase("si")){
-            System.out.println("Nombre de la tabla que contiene la Foreign key: ");
+        if (confirmacionF.equalsIgnoreCase("si")) {
+            System.out.print("Nombre de la tabla que contiene la Foreign key: ");
             String foreignReference = s.next();
-            System.out.print("Nombre de la tabla a la que hacer referencia: ");
+            System.out.print("Nombre del campo que se va a usar: ");
+            String campoForeign = s.next();
+            System.out.print("Nombre del campo de al que tiene que hacer referencia: ");
+            String campoRef = s.next();
+            System.out.print("Nombre de la tabla a la que hace referencia: ");
             String tableReference = s.next();
 
-
+            // COMPROBAMOS SI LAS TABLAS CONTIENE EL CAMPO INDICADO
+            boolean tablaExiste = tablas.containsKey(tableReference);
+            boolean campoExiste = tablas.containsKey(foreignReference);
+            if (tablaExiste && campoExiste) {
+                queryForeign = String.format(
+                        "FOREIGN KEY (%s) REFERENCES %s(%s);",
+                        campoForeign, tableReference, campoRef
+                );
+            }
         }
 
 
+
         // MANDAR DATOS
-        sendData(nombreBD, nombreTablas, campos);
+        sendData(nombreBD, tablas, queryForeign);
     }
 
     // MADAMOS LOS DATOS A LA CLASE "CrearScript"
-    public static void sendData(String nombreDB, String[] nombreTablas, String[] campos){
-        CrearScript.scriptCompleto(nombreDB, nombreTablas, campos);
+    public static void sendData(String nombreDB,Map<String, List<String>> tablas ,String queryForeign){
+        CrearScript.scriptCompleto(nombreDB, tablas, queryForeign);
     }
 
     public static void main(String[] args){

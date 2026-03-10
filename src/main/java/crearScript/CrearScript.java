@@ -2,20 +2,25 @@ package main.java.crearScript;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class CrearScript {
     // RECIBIMOS LOS DISTINTOS OBJETOS DESDE LA CLASE "sendData"
-    public static void scriptCompleto(String nombreBD, String[] nombreTablas, String[] campos){
+    public static void scriptCompleto(String nombreBD,
+                                      Map<String, List<String>> tablas,
+                                      String queryForeign){
         // CREAMOS LOS "create table" CON LOS DISTINTOS NOMBRES ASIGNADOS Y LOS DATOS ELEGIDOS
         StringBuilder createTablas = new StringBuilder();
-        for (String nombreTabla : nombreTablas) {
-            // USAMOS .append PARA UNIR EL TEXTO JUNTO CON LAS VARIABLES
-            createTablas.append("CREATE TABLE ").append(nombreTabla).append(" (");
-            // PONER LOS CAMPOS
-            for (int j = 0; j < campos.length; j++) {
-                createTablas.append(campos[j]);
-                // LOS SEPARAMOS CON COMA
-                if (j < campos.length - 1) {
+        for(String tabla : tablas.keySet()){
+            // USAMOS .append PARA JUNTAR LAS VARIABLES CON EL TEXTO
+            createTablas.append("CREATE TABLE ")
+                    .append(tabla)
+                    .append(" (");
+            List<String> listaCampos = tablas.get(tabla);
+            for(int i = 0; i < listaCampos.size(); i++){
+                createTablas.append(listaCampos.get(i));
+                if(i < listaCampos.size()-1){
                     createTablas.append(", ");
                 }
             }
@@ -27,11 +32,13 @@ public class CrearScript {
                         "CREATE DATABASE %s;\n" +
                         "USE %s;\n" +
                         "%s" +
-                        "",
+                        "%s" +
+                        " ",
                 nombreBD,
                 nombreBD,
                 nombreBD,
-                createTablas
+                createTablas,
+                queryForeign
         );
 
         System.out.println("Directorio de ejecución: " + System.getProperty("user.dir"));
